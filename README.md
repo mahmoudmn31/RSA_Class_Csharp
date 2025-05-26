@@ -1,4 +1,4 @@
-# RSA Encrypting & Decryption C#
+# RSA Encryption & Decryption C#
 
 This class provides RSA encryption and decryption functionality in C#.
 

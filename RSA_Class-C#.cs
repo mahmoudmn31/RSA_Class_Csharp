@@ -7,27 +7,37 @@ public class RsaEncryption
     public static (string publicKey, string privateKey) GenerateKeyPair(int keySize = 2048)
     {
         ValidateKeySize(keySize);
-        using var rsa = RSA.Create();
-        rsa.KeySize = keySize;
-        string publicKey = rsa.ToXmlString(false);
-        string privateKey = rsa.ToXmlString(true);
-        return (publicKey, privateKey);
+    
+        using (var rsa = RSA.Create())
+        {
+            rsa.KeySize = keySize;
+    
+            string publicKey = rsa.ToXmlString(false);
+            string privateKey = rsa.ToXmlString(true);
+    
+            return (publicKey, privateKey);
+        }
     }
 
     public static string Encrypt(string plainText, string publicKey, int keySize = 2048)
     {
         ValidateKeySize(keySize);
+    
         if (string.IsNullOrEmpty(plainText))
             throw new ArgumentNullException(nameof(plainText));
         if (string.IsNullOrEmpty(publicKey))
             throw new ArgumentNullException(nameof(publicKey));
-
-        using var rsa = RSA.Create();
-        rsa.KeySize = keySize;
-        rsa.FromXmlString(publicKey);
-        byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
-        byte[] encryptedBytes = rsa.Encrypt(plainBytes, RSAEncryptionPadding.OaepSHA256);
-        return Convert.ToBase64String(encryptedBytes);
+    
+        using (var rsa = RSA.Create())
+        {
+            rsa.KeySize = keySize;
+            rsa.FromXmlString(publicKey);
+    
+            byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+            byte[] encryptedBytes = rsa.Encrypt(plainBytes, RSAEncryptionPadding.OaepSHA256);
+    
+            return Convert.ToBase64String(encryptedBytes);
+        }
     }
 
     public static string Decrypt(string encryptedText, string privateKey, int keySize = 2048)

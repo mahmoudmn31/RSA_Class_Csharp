@@ -30,12 +30,11 @@ public class RsaEncryption
     
         using (var rsa = RSA.Create())
         {
-            rsa.KeySize = keySize;
             rsa.FromXmlString(publicKey);
-    
+        
             byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
-            byte[] encryptedBytes = rsa.Encrypt(plainBytes, RSAEncryptionPadding.OaepSHA256);
-    
+            byte[] encryptedBytes = rsa.Encrypt(plainBytes, RSAEncryptionPadding.Pkcs1);
+        
             return Convert.ToBase64String(encryptedBytes);
         }
     }
@@ -65,7 +64,7 @@ public class RsaEncryption
 
     private static void ValidateKeySize(int keySize)
     {
-        if (keySize < 1024 || keySize > 4096)
+        if (keySize < 2048 || keySize > 4096)
             throw new ArgumentException("Key size must be between 1024 and 4096 bits", nameof(keySize));
         if (keySize % 8 != 0)
             throw new ArgumentException("Key size must be a multiple of 8", nameof(keySize));

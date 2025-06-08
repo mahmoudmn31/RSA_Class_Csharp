@@ -50,15 +50,18 @@ public class RsaEncryption
     
         try
         {
-            using var rsa = RSA.Create();
-            rsa.KeySize = keySize;
-            rsa.FromXmlString(privateKey);
-
-            string base64Encrypted = FromUrlSafeBase64(encryptedText);
-            byte[] encryptedBytes = Convert.FromBase64String(base64Encrypted);
-    
-            byte[] decryptedBytes = rsa.Decrypt(encryptedBytes, RSAEncryptionPadding.OaepSHA256);
-            return Encoding.UTF8.GetString(decryptedBytes);
+            using (var rsa = RSA.Create())
+            {
+                rsa.KeySize = keySize;
+                rsa.FromXmlString(privateKey);
+            
+                // تبدیل از Base64 URL-Safe به Base64 معمولی
+                string base64Encrypted = FromUrlSafeBase64(encryptedText);
+                byte[] encryptedBytes = Convert.FromBase64String(base64Encrypted);
+            
+                byte[] decryptedBytes = rsa.Decrypt(encryptedBytes, RSAEncryptionPadding.OaepSHA256);
+                return Encoding.UTF8.GetString(decryptedBytes);
+            }
         }
         catch (FormatException)
         {
